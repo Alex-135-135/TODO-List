@@ -3,7 +3,8 @@ import {Platform, StyleSheet, Text, View, TextInput, Picker, CheckBox, Button, A
 import AddNewTask from './AddNewTask.js'
 export default class TaskList extends Component{
   state={
-    tasks: []
+    tasks: [],
+    flag: true,
   }
 
   gettask = async () =>{
@@ -11,12 +12,13 @@ export default class TaskList extends Component{
     const i = await this.props.navigation.getParam('Task');
       tasks = JSON.parse(tasks)
       this.setState({tasks})
-      console.log(tasks)
+      console.log( tasks.filter(function(item){
+   return item.checked == false;
+}))
   }
  componentWillMount(){
     this.gettask()
   }
-
 
   render() {
     return (
@@ -27,7 +29,7 @@ export default class TaskList extends Component{
               title="Go to AddNewTask"
               onPress={() => this.props.navigation.navigate('AddNewTask')}
             />
-          {this.state.tasks.map((a, b) =>
+          {this.state.tasks.filter(function(item){return item.checked == false;}).map((a, b) =>
             <View key={b} style={{width: '90%',  backgroundColor: 'red', left: '5%', borderBottomWidth: 2}}>
               <View>
                 <Text>Task: {a.task}</Text>
@@ -35,6 +37,11 @@ export default class TaskList extends Component{
               <View>
               <Text >{a.date}</Text>
               </View>
+              <CheckBox
+              title='Click Here'
+              value={a.checked}
+              onChange={() => this.setState({checked: !a.checked})}
+              />
               <Button
               title="Go to TaskView"
               onPress={() => this.props.navigation.navigate('TaskView', {
