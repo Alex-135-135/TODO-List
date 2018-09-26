@@ -16,23 +16,25 @@ export default class TaskView extends Component{
       alert('Заповніть поле Task')
     }else{
       alert('Task збережено')
-      this.state.tasks[this.state.i].task = this.state.task
-      this.state.tasks[this.state.i].priority = this.state.priority
-      this.state.tasks[this.state.i].checked = this.state.checked
-      this.state.tasks[this.state.i].date = this.state.date
+      this.setState({tasks: this.state.tasks[this.state.i].task = this.state.task})
+      this.setState({tasks: this.state.tasks[this.state.i].priority = this.state.priority})
+      this.setState({tasks: this.state.tasks[this.state.i].checked = this.state.checked})
+      this.setState({tasks: this.state.tasks[this.state.i].date = this.state.date})
+      console.log(this.state.tasks[this.state.i])
       AsyncStorage.setItem('task', JSON.stringify(this.state.tasks))
     }
   }
   handleDelete = async () => {
     this.state.tasks.splice(this.state.i, 1);
+    //this.setState({tasks:this.state.tasks.splice(this.state.i, 1) })
     AsyncStorage.setItem('task', JSON.stringify(this.state.tasks))
-    this.props.navigation.navigate('TaskList')
+    this.props.navigation.navigate('TaskList', {lllll: this.state.tasks})
     alert('Task видалено')
   }
 
   gettask = async () =>{
     let tasks = await AsyncStorage.getItem('task')
-    const i = await this.props.navigation.getParam('key');
+    const i = await this.props.navigation.getParam('Task');
       tasks = JSON.parse(tasks)
       //tasks[1]
       this.setState(tasks[i])
@@ -88,7 +90,7 @@ export default class TaskView extends Component{
            <View style={{width: 200, top: 40}}>
             <Button
               title="Go to AddNewTask"
-              onPress={() => this.props.navigation.navigate('TaskList')}
+              onPress={() => this.props.navigation.navigate('TaskList', {lllll: this.state.tasks})}
             />
           </View>
         </View>
