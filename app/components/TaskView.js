@@ -8,7 +8,7 @@ export default class TaskView extends Component{
     checked: false,
     date: '',
     tasks: [{}],
-    i: 0,
+    i: '',
   }
 
   handleCreate = async () => {
@@ -20,13 +20,11 @@ export default class TaskView extends Component{
       this.setState({tasks: this.state.tasks[this.state.i].priority = this.state.priority})
       this.setState({tasks: this.state.tasks[this.state.i].checked = this.state.checked})
       this.setState({tasks: this.state.tasks[this.state.i].date = this.state.date})
-      console.log(this.state.tasks[this.state.i])
       AsyncStorage.setItem('task', JSON.stringify(this.state.tasks))
     }
   }
   handleDelete = async () => {
     this.state.tasks.splice(this.state.i, 1);
-    //this.setState({tasks:this.state.tasks.splice(this.state.i, 1) })
     AsyncStorage.setItem('task', JSON.stringify(this.state.tasks))
     this.props.navigation.navigate('TaskList', {lllll: this.state.tasks})
     alert('Task видалено')
@@ -34,13 +32,19 @@ export default class TaskView extends Component{
 
   gettask = async () =>{
     let tasks = await AsyncStorage.getItem('task')
-    const i = await this.props.navigation.getParam('Task');
-      tasks = JSON.parse(tasks)
+    tasks = JSON.parse(tasks)
+    const a = await this.props.navigation.getParam('Task');
+    let l = tasks.length
+      for (let i=0; i<l; i++){
+        if(tasks[i].date == a){
+          this.setState({i})
+          this.setState(tasks[i])
+        }
+      }
+
       //tasks[1]
-      this.setState(tasks[i])
-      this.setState({i})
+      this.setState({a})
       this.setState({tasks})
-      console.log(this.state)
   }
 
   componentDidMount(){

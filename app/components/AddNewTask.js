@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TextInput, Picker, CheckBox, Button, StackNavigator, AsyncStorage} from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import { Navigation } from 'react-native-navigation';
+//import { securityService } from 'project-services'
 
 export default class AddNewTask extends Component{
 
@@ -9,7 +10,7 @@ export default class AddNewTask extends Component{
     task: '',
     priority: 'LOW',
     checked: false,
-    date: new Date()
+    date: ''
   }
 
   handleCreate = async () => {
@@ -17,6 +18,7 @@ export default class AddNewTask extends Component{
       alert('Заповніть поле Task')
     }else{
       alert('Task додано')
+      this.setState({date: new Date()})
       let tasks = await AsyncStorage.getItem('task')
       tasks = JSON.parse(tasks)
       let data = tasks ? tasks : [];
@@ -25,6 +27,10 @@ export default class AddNewTask extends Component{
       AsyncStorage.setItem('task', JSON.stringify(data))
     }
   }
+
+  // componentDidMount(){
+  //   securityService.login(body) 
+  // }
 
   render() {
     return (

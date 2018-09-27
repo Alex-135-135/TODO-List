@@ -4,7 +4,6 @@ import AddNewTask from './AddNewTask.js'
 export default class TaskList extends Component{
   state={
     tasks: [],
-    flag: true,
   }
 
   gettask = async () =>{
@@ -12,13 +11,26 @@ export default class TaskList extends Component{
     //const i = await this.props.navigation.getParam('Task');
       tasks = JSON.parse(tasks)
       this.setState({tasks})
-      console.log( tasks.filter(function(item){return item.checked == false;}))
+      console.log(tasks)
   }
-
+checked = (a, b) => {
+console.log(a, b)
+let tasks = this.state.tasks
+let l = tasks.length
+for (let i=0; i<l; i++){
+  console.log(tasks[i].date, a)
+  if(tasks[i].date == a){
+    tasks[i].checked = !tasks[i].checked
+  }
+}
+  this.setState({tasks})
+  AsyncStorage.setItem('task', JSON.stringify(this.state.tasks))
+}
 componentDidMount(){
   this.gettask()
 }
 componentWillReceiveProps(){
+  console.log('fsfs')
   this.gettask() 
 }
   render() {
@@ -30,10 +42,13 @@ componentWillReceiveProps(){
               title="Go to AddNewTask"
               onPress={() => this.props.navigation.navigate('AddNewTask')}
             />
-          {this.state.tasks.filter(function(item){return item.checked == false;}).map((a, b) =>
-            <View key={b} style={{width: '90%',  backgroundColor: 'red', left: '5%', borderBottomWidth: 2}}>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('TaskView', { Task: b, })}>
-                <View key={b} style={{width: '90%',  backgroundColor: 'red', left: '5%', borderBottomWidth: 2}}>
+          {this.state.tasks.filter(function(item){return item.checked == false;})
+          .sort((a2,b2) => {return a2.date > b2.date ? -1 : a2.date < b2.date ? 1 : 0})
+          .sort((a1,b1) => {return a1.priority.length - b1.priority.length})
+          .map((a, b) => 
+            <View key={b} style={{width: '90%', height: 60, left: '4%', borderBottomWidth: 2, flexDirection: 'row',}}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('TaskView', { Task: a.date, })} style={{width: '73%',justifyContent: 'center'}}>
+                <View key={b}>
                   <View>
                     <Text>Task: {a.task}</Text>
                   </View>
@@ -42,18 +57,16 @@ componentWillReceiveProps(){
                   </View>
                 </View>
               </TouchableOpacity>
-              <View style={{flexDirection: 'row',}}>
-                <Text style={{top: 5}}>Complite: </Text>
-                <CheckBox
-                title='Click Here'
-                value={this.state.checked}
-                onChange={() => this.setState({tasks: this.state.tasks[b].checked = })}
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Button
+                  title="Complite"
+                  onPress={() => this.checked(a.date)}
                 />
               </View>
             </View>
         )}
         </View>
-        <View style={{width: '100%', height: 50,  backgroundColor: 'blue',}}></View>
+        <View style={{width: '100%', height: 50}}></View>
         </ScrollView>
       </View>
     );
